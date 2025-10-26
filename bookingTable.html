@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Booking Summary - Car Rental (Admin Panel)</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" href="ilo.avif">
+  <style>
+    body {
+      background-image: url('ride-leasing.gif');
+      background-size: cover;
+      background-position: fixed;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      background-color: rgba(0, 0, 0, 0.75);
+      padding: 30px;
+      border-radius: 10px;
+      margin-top: 50px;
+      margin-bottom: 100px; 
+    }
+
+    h1 {
+      color: #00d0ff;
+      text-shadow: 2px 2px 4px black;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    table {
+      color: white;
+      text-align: center;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    th {
+      background-color: #00d0ff;
+      color: black;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+
+    td img {
+      max-width: 100px;
+      border-radius: 5px;
+    }
+
+    .btn-clear {
+      background-color: red;
+    }
+
+    .btn-update {
+      background-color: #ffc107;
+      color: black;
+    }
+
+    .btn-delete {
+      background-color: #dc3545;
+    }
+
+    .btn-home {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 25px;
+      text-decoration: none;
+    }
+    #searchInput {
+      width: 300px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      border: none;
+      padding: 8px 10px;
+    }
+    .footer-actions {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      padding: 15px 0;
+      text-align: center;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>🚘 Car Rental Booking Details</h1>
+    <div class="text-center mb-4">
+      <input type="text" id="searchInput" class="form-control d-inline-block" placeholder="🔍 Search by name, email, or city">
+    </div>
+    <table class="table table-bordered table-hover align-middle">
+      <thead>
+        <tr>
+          <th>S.NO</th>
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>City</th>
+          <th>Location</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Car Image</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="bookingTableBody"></tbody>
+    </table>
+  </div>
+  <div class="footer-actions ">
+    <button class="btn btn-danger btn-clear" id="clearAllBtn">🧹 Clear All Bookings</button>
+    <a href="home1.html" class="btn btn-home">🔙 Back to Home</a>
+  </div>
+
+  <script>
+    let allBookings = JSON.parse(localStorage.getItem("allBookings")) || [];
+    const tableBody = document.getElementById("bookingTableBody");
+    const searchInput = document.getElementById("searchInput");
+    function renderTable(filteredBookings = allBookings) {
+      if (filteredBookings.length === 0) {
+        tableBody.innerHTML = `
+          <tr>
+            <td colspan="10" class="text-center text-warning">
+              ⚠️ No booking data found.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tableBody.innerHTML = filteredBookings.map((booking, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${booking.fullName}</td>
+          <td>${booking.email}</td>
+          <td>${booking.phone}</td>
+          <td>${booking.city}</td>
+          <td>${booking.location}</td>
+          <td>${booking.startDate}</td>
+          <td>${booking.endDate}</td>
+          <td>${booking.carImage ? `<img src="${booking.carImage}" alt="${booking.carName}" />` : "No car selected"}</td>
+          <td>
+            <button class="btn btn-sm btn-update" onclick="updateBooking(${index})">✏️ Update</button>
+            <button class="btn btn-sm btn-delete" onclick="deleteBooking(${index})">🗑️ Delete</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+    function deleteBooking(index) {
+      if (confirm("Are you sure you want to delete this booking?")) {
+        allBookings.splice(index, 1);
+        localStorage.setItem("allBookings", JSON.stringify(allBookings));
+        renderTable();
+      }
+    }
+    document.getElementById("clearAllBtn").addEventListener("click", () => {
+      if (confirm("⚠️ This will delete ALL booking records. Continue?")) {
+        localStorage.removeItem("allBookings");
+        allBookings = [];
+        renderTable();
+      }
+    });
+    function updateBooking(index) {
+      const booking = allBookings[index];
+      const updatedName = prompt("Enter new full name:", booking.fullName);
+      const updatedCity = prompt("Enter new city:", booking.city);
+      const updatedLocation = prompt("Enter new location:", booking.location);
+      const updatedStart = prompt("Enter new start date:", booking.startDate);
+      const updatedEnd = prompt("Enter new end date:", booking.endDate);
+
+      if (updatedName) booking.fullName = updatedName;
+      if (updatedCity) booking.city = updatedCity;
+      if (updatedLocation) booking.location = updatedLocation;
+      if (updatedStart) booking.startDate = updatedStart;
+      if (updatedEnd) booking.endDate = updatedEnd;
+
+      localStorage.setItem("allBookings", JSON.stringify(allBookings));
+      renderTable();
+      alert("✅ Booking updated successfully!");
+    }
+    searchInput.addEventListener("input", () => {
+      const term = searchInput.value.toLowerCase();
+      const filtered = allBookings.filter(b => 
+        b.fullName.toLowerCase().includes(term) ||
+        b.email.toLowerCase().includes(term) ||
+        b.city.toLowerCase().includes(term)
+      );
+      renderTable(filtered);
+    });
+    renderTable();
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

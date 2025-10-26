@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Location Booking - Car Rental</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="icon" href="ilo.avif">
+  <style>
+    body {
+      background-image: url('ride-leasing.gif');
+      background-size: cover;
+      color: white;
+    }
+
+    form {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    li:hover {
+      background-color: skyblue;
+    }
+
+    h1 {
+      text-shadow: 2px 2px white;
+      animation: fadeIn 2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="sticky-top bg-dark p-3">
+    <div class="row">
+      <div class="col-6">
+        <h1 class="text-white">🚘 CAR RENTAL</h1>
+      </div>
+      <div class="col-6 p-1">
+        <nav>
+          <ul class="list-inline d-flex justify-content-end">
+            <li class="list-inline-item"><a href="home1.html" class="text-decoration-none text-white pe-2">Home</a></li>
+            <li class="list-inline-item"><a href="about.html" class="text-decoration-none text-white pe-2">About Me</a></li>
+            <li class="list-inline-item"><a href="car.html" class="text-decoration-none text-white pe-2">Car-List</a></li>
+            <li class="list-inline-item"><a href="account.html" class="text-decoration-none text-white pe-2">Create Account</a></li>
+            <li class="list-inline-item"><button class="btn btn-white bg-info"><a href="login.html" class="text-decoration-none text-white pe-2">Login</a></button></li>
+            <li class="list-inline-item"><button class="btn btn-white bg-info"><a href="https://www.google.com/" class="text-decoration-none text-white pe-2">Logout</a></button></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="container mt-5">
+    <h1 class="text-center mb-4">Location Details</h1>
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <form id="bookingForm">
+          <div class="mb-3">
+            <label class="form-label text-white">City</label>
+            <input type="text" class="form-control" id="city" placeholder="Enter city" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-white">Location</label>
+            <input type="text" class="form-control" id="location" placeholder="Enter specific location" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-white">Start Date</label>
+            <input type="date" class="form-control" id="startDate" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label text-white">End Date</label>
+            <input type="date" class="form-control" id="endDate" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("bookingForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+      const city = document.getElementById("city").value;
+      const location = document.getElementById("location").value;
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+
+      const bookingDetails = {
+        city,
+        location,
+        startDate,
+        endDate
+      };
+      localStorage.setItem("bookingDetails", JSON.stringify(bookingDetails));
+      alert("Successfully Booked!");
+      window.location.href = "resp.html";
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
